@@ -1,8 +1,10 @@
 'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogTitle } from '@radix-ui/react-dialog'
 import { Send } from 'lucide-react'
 import { ComponentProps, ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { Combobox } from './form/combobox'
 import { Input } from './form/input'
@@ -16,6 +18,18 @@ import {
 } from './ui/dialog'
 import { Form } from './ui/form'
 
+const feedbackSchema = z.object({
+  title: z
+    .string({ required_error: 'Write a title' })
+    .min(2, 'You can do better!'),
+  collaborator: z.string({ required_error: "Don't forget about me!" }),
+  feedback: z
+    .string({ required_error: 'Write a feedback' })
+    .min(2, 'You can do better!'),
+})
+
+type FeedbackData = z.infer<typeof feedbackSchema>
+
 interface WriteFeedbackDialogProps extends ComponentProps<typeof Dialog> {
   children: ReactNode
 }
@@ -24,7 +38,14 @@ export function WriteFeedbackDialog({
   children,
   ...props
 }: WriteFeedbackDialogProps) {
-  const form = useForm()
+  const form = useForm<FeedbackData>({
+    resolver: zodResolver(feedbackSchema),
+  })
+
+  async function createFeedback(data: FeedbackData) {
+    console.log(data)
+  }
+
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -36,7 +57,10 @@ export function WriteFeedbackDialog({
         </DialogDescription>
 
         <Form {...form}>
-          <form className="flex w-full flex-col gap-4">
+          <form
+            className="flex w-full flex-col gap-4"
+            onSubmit={form.handleSubmit(createFeedback)}
+          >
             <Input name="title" label="Title:" />
 
             <Combobox
