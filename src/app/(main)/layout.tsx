@@ -10,6 +10,7 @@ import {
 import { ReactNode } from 'react'
 
 import { AppSidebar } from '@/components/app-sidebar'
+import { HeaderTitle } from '@/components/header-title'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,6 +18,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { WriteFeedbackDialog } from '@/components/write-feedback-dialog'
 
 const data = {
   user: {
@@ -52,7 +54,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            Title
+            <HeaderTitle data={data.pages} />
           </div>
 
           <div className="flex gap-2 px-4">
@@ -60,10 +62,13 @@ export default function MainLayout({ children }: { children: ReactNode }) {
             <Button variant="ghost">
               <EyeOff />
             </Button>
-            <Button>
-              <NotebookPen />
-              Write feedback
-            </Button>
+
+            <WriteFeedbackDialog>
+              <Button>
+                <NotebookPen />
+                Write feedback
+              </Button>
+            </WriteFeedbackDialog>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>

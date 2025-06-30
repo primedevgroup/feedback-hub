@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 
 import * as React from 'react'
 
+import { PageData } from '@/@types/defaults'
 import { NavUser } from '@/components/nav-user'
 import {
   Sidebar,
@@ -23,11 +24,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
       email: string
       avatar: string
     }
-    pages: Array<{
-      title: string
-      url: string
-      icon: React.ReactNode
-    }>
+    pages: Array<PageData>
   }
 }
 
