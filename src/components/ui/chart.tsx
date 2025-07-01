@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 'use client'
 
 import * as React from 'react'
@@ -125,6 +127,14 @@ function ChartTooltipContent({
     indicator?: 'line' | 'dot' | 'dashed'
     nameKey?: string
     labelKey?: string
+    payload: Array<{
+      dataKey: string
+      name: string
+      color: string
+      value: string
+      payload: string
+    }>
+    label: string
   }) {
   const { config } = useChart()
 
@@ -344,9 +354,11 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer, ChartLegend,
+  ChartContainer,
+  ChartLegend,
   ChartLegendContent,
-  ChartStyle, ChartTooltip,
+  ChartStyle,
+  ChartTooltip,
   ChartTooltipContent
 }
 

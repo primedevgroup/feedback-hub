@@ -1,9 +1,9 @@
 export default async function FeedbackPage({
   params,
 }: {
-  params: { feedbackId: string }
+  params: Promise<{ feedbackId: string }>
 }) {
-  const { feedbackId } = params
+  const { feedbackId } = await params
 
   return (
     <div className="flex w-full flex-col gap-4">
