@@ -3,14 +3,62 @@ import { Input } from "@/components/form/input"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { api } from "@/lib/api"
+import { toast } from "sonner"
+import { GoogleLoginButton } from "@/components/google-login-button"
+
+const createAccountSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().min(1, 'Email is required').email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string().min(1, 'Please confirm your password')
+}).refine(data => data.password === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: 'Passwords do not match',
+})
+
+type CreateAccountData = z.infer<typeof createAccountSchema>
 
 export default function CreateAccountPage() {
-  const form = useForm()
+  const form = useForm<CreateAccountData>({
+    resolver: zodResolver(createAccountSchema)
+  })
+
   const router = useRouter()
 
-  function onSubmit(data: any) {
-    console.log('Form Data:', data)
+
+async function onSubmit(data: CreateAccountData) {
+  const loadingToast = toast.loading('Criando sua conta...')
+  
+  try {
+    const response = await api.post('/auth/signup', {
+      name: data.name,
+      email: data.email,
+      password: data.password
+    })
+
+    toast.dismiss(loadingToast)
+    toast.success('Conta criada com sucesso!')
+
+    router.push('/login')
+  } catch (error: any) {
+    console.error('Erro ao criar conta:', error.response?.data || error.message)
+
+    toast.dismiss(loadingToast)
+    
+    if (error.response?.status === 409) {
+      toast.error('Este email já está em uso')
+    } else if (error.response?.status === 400) {
+      toast.error('Dados inválidos. Verifique as informações fornecidas')
+    } else {
+      toast.error('Erro ao criar conta. Tente novamente')
+    }
   }
+}
+
+
 
   return (
     <div className="flex justify-center gap-8 flex-col items-center min-h-screen">
@@ -46,14 +94,20 @@ export default function CreateAccountPage() {
             />
 
             <Input 
-              name="confirm-password" 
+              name="confirmPassword" 
               label="Confirm password" 
-              placeholder="Enter your password" 
+              placeholder="Confirm your password" 
               type="password"
             /> 
             <Button type="submit" className="w-full cursor-pointer">
               Create account
             </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-px bg-border"></div>
+              <span className="text-sm text-muted-foreground">ou</span>
+              <div className="flex-1 h-px bg-border"></div>
+            </div>
+            <GoogleLoginButton className="w-full flex justify-center" />
           </form>
         </FormProvider>
       </div>

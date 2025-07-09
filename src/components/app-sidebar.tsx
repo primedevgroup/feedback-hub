@@ -30,7 +30,6 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ data, ...props }: AppSidebarProps) {
   const pathname = usePathname()
-  console.log(pathname)
 
   return (
     <Sidebar variant="inset" {...props}>

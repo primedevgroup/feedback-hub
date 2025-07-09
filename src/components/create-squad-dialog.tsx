@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react'
 import { ComponentProps } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { toast } from 'sonner'
 
 import { Input } from './form/input'
 import { Button } from './ui/button'
@@ -27,7 +28,11 @@ export function CreateSquadDialog({
   })
 
   async function createSquad(data: SquadData) {
-    console.log(data)
+    try {
+      toast.success('Squad criado com sucesso!')
+    } catch (error) {
+      toast.error('Erro ao criar squad. Tente novamente.')
+    }
   }
 
   return (

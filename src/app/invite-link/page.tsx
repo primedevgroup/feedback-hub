@@ -3,13 +3,13 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { Input } from "@/components/form/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/navigation';
+import { GoogleLoginButton } from "@/components/google-login-button";
 
 export default function InviteLinkPage() {
   const form = useForm()
   const router = useRouter()
 
   function onSubmit(data: any) {
-    console.log('Form Data:', data)
   }
 
   return (
@@ -47,9 +47,12 @@ export default function InviteLinkPage() {
               <Button type="submit" className="w-full cursor-pointer">
                 Accept Invite
               </Button>
-              <Button variant={'outline'} className="w-full cursor-pointer">
-                Login with Google
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-px bg-border"></div>
+                <span className="text-sm text-muted-foreground">ou</span>
+                <div className="flex-1 h-px bg-border"></div>
+              </div>
+              <GoogleLoginButton className="w-full flex justify-center" />
             </form>
           </FormProvider>
         </div>

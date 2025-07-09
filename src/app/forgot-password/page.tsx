@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 import { useState } from "react"
+import { toast } from "sonner"
+import { api } from "@/lib/api"
 
 export default function ForgotPasswordPage() {
   const emailForm = useForm()
@@ -17,34 +19,90 @@ export default function ForgotPasswordPage() {
 
   const router = useRouter()
 
-  function handleSendEmail(data: any) {
-    console.log('Email enviado:', data)
+  async function handleSendEmail(data: any) {
+    const loadingToast = toast.loading('Enviando email de verificação...')
+    
+    try {
+      await api.post('/email-verification/send', {
+        email: data.email
+      })
 
-    if (data.email) {
       setEmail(data.email)
       setEmailSent(true)
+      
+      toast.dismiss(loadingToast)
+      toast.success('Email de verificação enviado!')
+    } catch (error: any) {
+      console.error('Erro ao enviar email:', error)
+      
+      toast.dismiss(loadingToast)
+      
+      if (error.response?.status === 404) {
+        toast.error('Email não encontrado')
+      } else if (error.response?.status === 400) {
+        toast.error('Email inválido')
+      } else {
+        toast.error('Erro ao enviar email. Tente novamente')
+      }
     }
   }
 
-  function handleResendCode() {
+  async function handleResendCode() {
     if (email) {
-      console.log('Reenviando email para:', email)
+      const loadingToast = toast.loading('Reenviando código...')
+      
+      try {
+        await api.post('/email-verification/send', {
+          email: email
+        })
+        
+        toast.dismiss(loadingToast)
+        toast.info('Código reenviado!')
+      } catch (error: any) {
+        console.error('Erro ao reenviar código:', error)
+        
+        toast.dismiss(loadingToast)
+        toast.error('Erro ao reenviar código. Tente novamente')
+      }
     }
   }
 
-  function handleVerifyCode(data: any) {
-    console.log('Código digitado:', data)
+  async function handleVerifyCode(data: any) {
+    const loadingToast = toast.loading('Verificando código...')
+    
+    try {
+      await api.post('/email-verification/verify', {
+        email: email,
+        code: data.code
+      })
 
-    if (data.code) {
       setCodeSent(true)
+      
+      toast.dismiss(loadingToast)
+      toast.success('Código verificado com sucesso!')
+    } catch (error: any) {
+      console.error('Erro ao verificar código:', error)
+      
+      toast.dismiss(loadingToast)
+      
+      if (error.response?.status === 400) {
+        toast.error('Código inválido')
+      } else if (error.response?.status === 404) {
+        toast.error('Código não encontrado')
+      } else {
+        toast.error('Erro ao verificar código. Tente novamente')
+      }
     }
   }
 
   function handleResetPassword(data: any) {
-    console.log('Nova senha:', data)
-
     if (data['new-password'] && data['confirm-new-password']) {
-      console.log('Senha redefinida com sucesso!')
+      if (data['new-password'] !== data['confirm-new-password']) {
+        toast.error('As senhas não coincidem')
+        return
+      }
+      
+      toast.success('Senha redefinida com sucesso!')
       router.push('/login')
     }
   }
