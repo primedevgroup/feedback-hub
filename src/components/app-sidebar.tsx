@@ -18,17 +18,10 @@ import {
 } from '@/components/ui/sidebar'
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  data: {
-    user: {
-      name: string
-      email: string
-      avatar: string
-    }
-    pages: Array<PageData>
-  }
+  pages: Array<PageData>
 }
 
-export function AppSidebar({ data, ...props }: AppSidebarProps) {
+export function AppSidebar({ pages, ...props }: AppSidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -40,7 +33,7 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent className="mt-8">
         <SidebarMenu>
-          {data.pages.map(({ title, url, icon }) => {
+          {pages.map(({ title, url, icon }) => {
             return (
               <SidebarMenuItem key={url}>
                 <SidebarMenuButton isActive={pathname === url} asChild>
@@ -55,7 +48,7 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

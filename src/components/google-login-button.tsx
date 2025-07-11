@@ -4,6 +4,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
+import { useAuth } from '@/contexts/auth-context'
 
 interface GoogleLoginButtonProps {
   onSuccess?: () => void
@@ -12,6 +13,7 @@ interface GoogleLoginButtonProps {
 
 export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonProps) {
   const router = useRouter()
+  const { login } = useAuth()
 
   const handleSuccess = async (credentialResponse: any) => {
     const loadingToast = toast.loading('Fazendo login com Google...')
@@ -22,15 +24,10 @@ export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonPro
         idToken: credentialResponse.credential
       })
 
-      const token = response.data.access_token
+      const { access_token, user } = response.data
 
-      await fetch('/api/auth/set-cookie', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token })
-      })
+      // Usar o contexto de autenticação para fazer login
+      login(access_token, user)
 
       toast.dismiss(loadingToast)
       toast.success('Login realizado com sucesso!')

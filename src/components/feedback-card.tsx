@@ -1,29 +1,34 @@
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { UserTag } from './user-tag'
+import { Feedback } from '@/@types/defaults'
 
-export function FeedbackCard() {
+interface FeedbackCardProps {
+  feedback: Feedback
+}
+
+export function FeedbackCard({ feedback }: FeedbackCardProps) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR')
+  }
+
   return (
-    <Card>
-      <CardHeader className="flex items-center justify-between">
-        <CardTitle>Lorem Ipsum</CardTitle>
+    <Link href={`/feedback/${feedback.id}`}>
+      <Card className="hover:bg-muted/50 transition-colors">
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle>{feedback.title}</CardTitle>
 
-        <div className="flex items-center gap-2">
-          <UserTag>Antony Lajes</UserTag>
-          <time className="text-muted" dateTime="2025-06-30T23:42:35.275Z">
-            30/06/2025
-          </time>
-        </div>
-      </CardHeader>
-      <CardContent>
-        Lorem ipsum dolor sit amet. Et illum enim est aperiam aliquam non quasi
-        ipsa. Eum quaerat reprehenderit et libero quia sed dolorem ipsum ut
-        velit quibusdam ab veniam recusandae eum velit molestiae. Id accusamus
-        eveniet ut voluptatem quia id asperiores pariatur aut adipisci
-        aspernatur ut natus ullam aut consequatur commodi est quod dolor! Et
-        modi natus At dignissimos necessitatibus aut consectetur aliquam ut
-        perspiciatis similique aut eius magnam aut quasi sapiente. Aut
-        consequatur quae non laborum voluptatem aut blanditiis facilis?
-      </CardContent>
-    </Card>
+          <div className="flex items-center gap-2">
+            <UserTag>Usuário</UserTag>
+            <time className="text-muted" dateTime={feedback.created_at}>
+              {formatDate(feedback.created_at)}
+            </time>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {feedback.content}
+        </CardContent>
+      </Card>
+    </Link>
   )
 }

@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { useState } from "react"
 import { toast } from "sonner"
 import { api } from "@/lib/api"
+import { AuthRedirect } from '@/components/auth-redirect'
 
 export default function ForgotPasswordPage() {
   const emailForm = useForm()
@@ -108,76 +109,87 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex justify-center gap-8 flex-col items-center min-h-screen">
-      <h1 className="text-4xl font-extrabold">Feedback Hub</h1>
-      <div className="w-[448px] flex flex-col gap-4 p-6 rounded-lg shadow-lg bg-gradient-to-br from-[#18181B] to-[#18181B00] border border-gray-700">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xl font-bold">Forgot your password</h3>
-          <Button className="cursor-pointer" variant={'ghost'} onClick={() => router.push('/login')}>Login</Button>
-        </div>
+    <AuthRedirect>
+      <div className="flex justify-center gap-8 flex-col items-center min-h-screen">
+        <h1 className="text-4xl font-extrabold">Feedback Hub</h1>
+        
+        {!emailSent ? (
+          <div className="w-[448px] flex flex-col gap-4 p-6 rounded-lg shadow-lg bg-gradient-to-br from-[#18181B] to-[#18181B00] border border-gray-700">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold">Esqueceu sua senha?</h3>
+              <Button className="cursor-pointer" variant={'ghost'} onClick={() => router.push('/login')}>Voltar ao login</Button>
+            </div>
+            <span>Digite seu email para receber um código de verificação</span>
 
-        {!emailSent && (
-          <FormProvider {...emailForm}>
-            <form onSubmit={emailForm.handleSubmit(handleSendEmail)} className="flex flex-col gap-4">
-              <Input 
-                name="email" 
-                label="Email" 
-                placeholder="Enter your email" 
-                type="email"
-              />
-              <Button type="submit" className="w-full cursor-pointer">
-                Send email
-              </Button>
-            </form>
-          </FormProvider>
-        )}
+            <FormProvider {...emailForm}>
+              <form onSubmit={emailForm.handleSubmit(handleSendEmail)} className="flex flex-col gap-4">
+                <Input 
+                  name="email" 
+                  label="Email" 
+                  placeholder="Digite seu email" 
+                  type="email"
+                />
+                <Button type="submit" className="w-full cursor-pointer">
+                  Enviar código
+                </Button>
+              </form>
+            </FormProvider>
+          </div>
+        ) : !codeSent ? (
+          <div className="w-[448px] flex flex-col gap-4 p-6 rounded-lg shadow-lg bg-gradient-to-br from-[#18181B] to-[#18181B00] border border-gray-700">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold">Verificar código</h3>
+              <Button className="cursor-pointer" variant={'ghost'} onClick={() => router.push('/login')}>Voltar ao login</Button>
+            </div>
+            <span>Digite o código enviado para {email}</span>
 
-        {emailSent && !codeSent && (
-          <FormProvider {...codeForm}>
-            <form onSubmit={codeForm.handleSubmit(handleVerifyCode)} className="flex flex-col gap-4">
-              <Input 
-                name="code" 
-                label="Code" 
-                placeholder="Enter the code" 
-                type="number"
-              />
-              <Button 
-                type="button" 
-                variant={'link'} 
-                className="w-full justify-start cursor-pointer"
-                onClick={handleResendCode}
-              >
-                Resend code
-              </Button>
-              <Button type="submit" className="w-full cursor-pointer">
-                Verify
-              </Button>
-            </form>
-          </FormProvider>
-        )}
+            <FormProvider {...codeForm}>
+              <form onSubmit={codeForm.handleSubmit(handleVerifyCode)} className="flex flex-col gap-4">
+                <Input 
+                  name="code" 
+                  label="Código" 
+                  placeholder="Digite o código" 
+                  type="text"
+                />
+                <Button type="submit" className="w-full cursor-pointer">
+                  Verificar código
+                </Button>
+                <Button type="button" variant="outline" onClick={handleResendCode} className="w-full cursor-pointer">
+                  Reenviar código
+                </Button>
+              </form>
+            </FormProvider>
+          </div>
+        ) : (
+          <div className="w-[448px] flex flex-col gap-4 p-6 rounded-lg shadow-lg bg-gradient-to-br from-[#18181B] to-[#18181B00] border border-gray-700">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold">Nova senha</h3>
+              <Button className="cursor-pointer" variant={'ghost'} onClick={() => router.push('/login')}>Voltar ao login</Button>
+            </div>
+            <span>Digite sua nova senha</span>
 
-        {codeSent && (
-          <FormProvider {...passwordForm}>
-            <form onSubmit={passwordForm.handleSubmit(handleResetPassword)} className="flex flex-col gap-4">
-              <Input 
-                name="new-password" 
-                label="Password" 
-                placeholder="Enter the password" 
-                type="password"
-              />
-              <Input 
-                name="confirm-new-password" 
-                label="Confirm password" 
-                placeholder="Enter the password" 
-                type="password"
-              />
-              <Button type="submit" className="w-full cursor-pointer">
-                Change password
-              </Button>
-            </form>
-          </FormProvider>
+            <FormProvider {...passwordForm}>
+              <form onSubmit={passwordForm.handleSubmit(handleResetPassword)} className="flex flex-col gap-4">
+                <Input 
+                  name="new-password" 
+                  label="Nova senha" 
+                  placeholder="Digite sua nova senha" 
+                  type="password"
+                />
+                <Input 
+                  name="confirm-new-password" 
+                  label="Confirmar nova senha" 
+                  placeholder="Confirme sua nova senha" 
+                  type="password"
+                />
+                <Button type="submit" className="w-full cursor-pointer">
+                  Redefinir senha
+                </Button>
+              </form>
+            </FormProvider>
+          </div>
         )}
       </div>
-    </div>
+    </AuthRedirect>
   )
 }
