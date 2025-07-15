@@ -1,8 +1,10 @@
 'use client'
+import { useRouter } from 'next/navigation'
+
 import { FormProvider, useForm } from 'react-hook-form'
-import { Input } from "@/components/form/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
+
+import { Input } from '@/components/form/input'
+import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const form = useForm()
@@ -13,38 +15,52 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex justify-center gap-8 flex-col items-center min-h-screen">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-8">
       <h1 className="text-4xl font-extrabold">Feedback Hub</h1>
-      <div className="w-[448px] flex flex-col gap-4 p-6 rounded-lg shadow-lg bg-gradient-to-br from-[#18181B] to-[#18181B00] border border-gray-700">
-        <div className="flex justify-between items-center">
+      <div className="flex w-[448px] flex-col gap-4 rounded-lg border border-gray-700 bg-gradient-to-br from-[#18181B] to-[#18181B00] p-6 shadow-lg">
+        <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold">Login to your account</h3>
-          <Button className="cursor-pointer" variant={'ghost'} onClick={() => router.push('/create-account')}>Sign up</Button>
+          <Button
+            className="cursor-pointer"
+            variant={'ghost'}
+            onClick={() => router.push('/create-account')}
+          >
+            Sign up
+          </Button>
         </div>
         <span>Enter your email below to login to your account</span>
 
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <Input 
-              name="email" 
-              label="Email" 
-              placeholder="Enter your email" 
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <Input
+              name="email"
+              label="Email"
+              placeholder="Enter your email"
               type="email"
             />
 
-            <Input 
-              name="password" 
-              label="Password" 
-              placeholder="Enter your password" 
+            <Input
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
               type="password"
             />
 
-              <Button variant={'link'} type="submit" onClick={() => router.push('/forgot-password')} className="w-full cursor-pointer">
+            <Button
+              variant={'link'}
+              type="submit"
+              onClick={() => router.push('/forgot-password')}
+              className="w-full cursor-pointer"
+            >
               Forgot password? Click here
             </Button>
-              <Button type="submit" className="w-full cursor-pointer">
+            <Button type="submit" className="w-full cursor-pointer">
               Login
             </Button>
-              <Button variant={'outline'} className="w-full cursor-pointer">
+            <Button variant={'outline'} className="w-full cursor-pointer">
               Login with Google
             </Button>
           </form>
