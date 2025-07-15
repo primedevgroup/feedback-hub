@@ -1,11 +1,8 @@
 import { Inter } from 'next/font/google'
 
-import { GoogleOAuthProvider } from '@react-oauth/google'
 import type { Metadata } from 'next'
 
-import { QueryProvider } from '@/components/query-provider'
-import { Toaster } from '@/components/ui/sonner'
-import { AuthProvider } from '@/contexts/auth-context'
+import { Providers } from '@/components/providers'
 import './globals.css'
 
 const inter = Inter({
@@ -26,23 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
-        <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}
-        >
-          <QueryProvider>
-            <AuthProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-                <Toaster />
-              </ThemeProvider>
-            </AuthProvider>
-          </QueryProvider>
-        </GoogleOAuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
