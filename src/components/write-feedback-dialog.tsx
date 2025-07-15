@@ -1,10 +1,10 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DialogTitle } from '@radix-ui/react-dialog'
 import { Send } from 'lucide-react'
 import { ComponentProps, ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { toast } from 'sonner'
 
 import { Combobox } from './form/combobox'
 import { Input } from './form/input'
@@ -14,6 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
 import { Form } from './ui/form'
@@ -43,7 +44,11 @@ export function WriteFeedbackDialog({
   })
 
   async function createFeedback(data: FeedbackData) {
-    console.log(data)
+    try {
+      toast.success('Feedback enviado com sucesso!')
+    } catch (error) {
+      toast.error('Erro ao enviar feedback. Tente novamente.')
+    }
   }
 
   return (
