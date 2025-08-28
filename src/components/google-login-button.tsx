@@ -1,10 +1,10 @@
 'use client'
 
+import { useAuth } from '@/contexts/auth-context'
+import { api } from '@/lib/api'
 import { GoogleLogin } from '@react-oauth/google'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { api } from '@/lib/api'
-import { useAuth } from '@/contexts/auth-context'
 
 interface GoogleLoginButtonProps {
   onSuccess?: () => void
@@ -14,6 +14,9 @@ interface GoogleLoginButtonProps {
 export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonProps) {
   const router = useRouter()
   const { login } = useAuth()
+
+  // Verificar se o Google OAuth está configurado
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
   const handleSuccess = async (credentialResponse: any) => {
     const loadingToast = toast.loading('Fazendo login com Google...')
@@ -54,6 +57,22 @@ export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonPro
 
   const handleError = () => {
     toast.error('Erro ao fazer login com Google')
+  }
+
+  // Se o Google OAuth não estiver configurado, mostrar mensagem de erro
+  if (!googleClientId || googleClientId === 'seu_client_id_aqui') {
+    return (
+      <div className={`${className} flex items-center justify-center`}>
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground mb-2">
+            Google OAuth não configurado
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Configure NEXT_PUBLIC_GOOGLE_CLIENT_ID no arquivo .env.local
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

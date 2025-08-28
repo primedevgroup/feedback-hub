@@ -1,14 +1,19 @@
 import axios from 'axios'
 
+// Função para verificar se estamos no cliente
+const isClient = typeof window !== 'undefined'
+
 export const api = axios.create({
-  baseURL: 'https://feedback-hub-back-end.onrender.com',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 })
 
 api.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('auth_token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (isClient) {
+      const token = localStorage.getItem('auth_token')
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
     }
     return config
   },
@@ -23,7 +28,7 @@ api.interceptors.response.use(
     return response
   },
   error => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && isClient) {
       // Token expirado ou inválido
       localStorage.removeItem('auth_token')
       localStorage.removeItem('auth_user')

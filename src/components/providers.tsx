@@ -19,12 +19,28 @@ const queryClient = new QueryClient({
   },
 })
 
+// Verificar se a variável de ambiente está configurada
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider
-        clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}
-      >
+      {googleClientId ? (
+        <GoogleOAuthProvider clientId={googleClientId}>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Toaster />
+            </ThemeProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
+      ) : (
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -37,7 +53,7 @@ export function Providers({ children }: { children: ReactNode }) {
             <Toaster />
           </ThemeProvider>
         </AuthProvider>
-      </GoogleOAuthProvider>
+      )}
     </QueryClientProvider>
   )
 }

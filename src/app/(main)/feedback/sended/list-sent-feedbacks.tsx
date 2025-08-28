@@ -3,10 +3,10 @@ import Link from 'next/link'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useReceivedFeedbacks } from '@/hooks/use-feedbacks'
+import { useSentFeedbacks } from '@/hooks/use-feedbacks'
 
-export function ListFeedbacks() {
-  const { data: feedbacks, isLoading, error } = useReceivedFeedbacks()
+export function ListSentFeedbacks() {
+  const { data: feedbacks, isLoading, error } = useSentFeedbacks()
 
   if (isLoading) {
     return (
@@ -28,7 +28,7 @@ export function ListFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-destructive text-center">
-          <p>Erro ao carregar feedbacks recebidos</p>
+          <p>Erro ao carregar feedbacks enviados</p>
         </div>
       </div>
     )
@@ -38,17 +38,16 @@ export function ListFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-muted-foreground text-center">
-          <p>Nenhum feedback recebido ainda.</p>
+          <p>Nenhum feedback enviado ainda.</p>
         </div>
       </div>
     )
   }
 
-  console.log(feedbacks)
   return (
     <>
       {feedbacks?.map(({ id, content, title, created_at }) => (
-        <Link href={'123'}>
+        <Link key={id} href={`/feedback/${id}`}>
           <Card>
             <CardHeader className="flex items-center justify-between">
               <CardTitle>{title}</CardTitle>
@@ -56,7 +55,7 @@ export function ListFeedbacks() {
               <div className="flex items-center gap-2">
                 <time
                   className="text-muted-foreground"
-                  dateTime="2025-06-30T23:42:35.275Z"
+                  dateTime={created_at}
                 >
                   {new Date(created_at).toLocaleDateString('pt-BR')}
                 </time>
