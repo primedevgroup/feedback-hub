@@ -43,10 +43,8 @@ export function NavSquads() {
   const params = useParams()
   const { logout } = useAuth()
 
-  // Extrair squadId da URL
   const squadId = params.squadId
   
-  // Encontrar a squad selecionada
   const selectedSquad = squads?.find(squad => squad.id === squadId)
 
   async function createSquad(data: SquadData) {
@@ -105,7 +103,7 @@ export function NavSquads() {
                   {selectedSquad ? selectedSquad.name : 'Select Squad'}
                 </span>
                 <span className="truncate text-xs">
-                  {selectedSquad ? `${selectedSquad.membersCount} participants` : 'No squad selected'}
+                  {selectedSquad ? `${selectedSquad.membersCount} members` : 'No squad selected'}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
