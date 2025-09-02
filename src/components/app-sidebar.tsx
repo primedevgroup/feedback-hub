@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
 import { PageData } from '@/@types/defaults'
-import { NavUser } from '@/components/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { NavSquads } from './squads/nav-squads'
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   pages: Array<PageData>
@@ -48,7 +48,7 @@ export function AppSidebar({ pages, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavSquads />
       </SidebarFooter>
     </Sidebar>
   )
