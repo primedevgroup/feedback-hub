@@ -9,7 +9,14 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  params: {
+    squadId: string
+  }
+}
+
+export default function DashboardPage({ params }: DashboardPageProps) {
+  const { squadId } = params
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="flex w-full gap-4">

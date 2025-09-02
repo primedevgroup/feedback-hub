@@ -49,6 +49,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false)
   }, [isClient])
 
+  // Verificar se o token foi removido do localStorage (por exemplo, por erro 401)
+  useEffect(() => {
+    if (!isClient) return
+
+    const checkToken = () => {
+      const storedToken = localStorage.getItem('auth_token')
+      if (!storedToken && token) {
+        // Token foi removido, fazer logout
+        setToken(null)
+        setUser(null)
+      }
+    }
+
+    // Verificar a cada segundo se o token ainda existe
+    const interval = setInterval(checkToken, 1000)
+    
+    return () => clearInterval(interval)
+  }, [isClient, token])
+
   const login = (newToken: string, userData: User) => {
     setToken(newToken)
     setUser(userData)

@@ -29,10 +29,10 @@ api.interceptors.response.use(
   },
   error => {
     if (error.response?.status === 401 && isClient) {
-      // Token expirado ou inválido
+      // Token expirado ou inválido - apenas limpar o localStorage
+      // O redirecionamento será tratado pelo contexto de autenticação
       localStorage.removeItem('auth_token')
       localStorage.removeItem('auth_user')
-      window.location.href = '/login'
     }
     return Promise.reject(error)
   },

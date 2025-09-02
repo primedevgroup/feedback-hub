@@ -25,20 +25,20 @@ export default function LoginPage() {
     login(access_token, user)
 
     toast.dismiss(loadingToast)
-    toast.success('Login realizado com sucesso!')
+    toast.success('Login successful!')
 
-    router.push('/dashboard')
+    router.push('/squads')
   } catch (error: any) {
-    console.error('Erro ao fazer login:', error)
+    console.error('Error logging in:', error)
     
     toast.dismiss(loadingToast)
     
     if (error.response?.status === 401) {
-      toast.error('Email ou senha incorretos')
+      toast.error('Email or password incorrect')
     } else if (error.response?.status === 400) {
-      toast.error('Dados inválidos. Verifique as informações fornecidas')
+      toast.error('Invalid data. Check the information provided')
     } else {
-      toast.error('Erro ao fazer login. Tente novamente')
+      toast.error('Error logging in. Try again')
     }
   }
 }

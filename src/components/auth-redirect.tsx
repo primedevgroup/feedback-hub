@@ -16,7 +16,7 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
   useEffect(() => {
     // Só redirecionar se não estiver carregando e estiver autenticado
     if (!isLoading && isAuthenticated) {
-      router.push('/dashboard')
+      router.push('/squads')
     }
   }, [isAuthenticated, isLoading, router])
 

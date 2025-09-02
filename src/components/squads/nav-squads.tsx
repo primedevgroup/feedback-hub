@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@/contexts/auth-context"
 import {
   ChevronsUpDown,
   LogOut,
@@ -7,6 +8,7 @@ import {
   UserCircle,
   Users
 } from "lucide-react"
+import { useParams, useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 import {
@@ -37,6 +39,15 @@ import { useSquads } from "./use-squads"
 export function NavSquads() {
   const { isMobile } = useSidebar()
   const { squads, isLoading, refetchSquads } = useSquads()
+  const router = useRouter()
+  const params = useParams()
+  const { logout } = useAuth()
+
+  // Extrair squadId da URL
+  const squadId = params.squadId
+  
+  // Encontrar a squad selecionada
+  const selectedSquad = squads?.find(squad => squad.id === squadId)
 
   async function createSquad(data: SquadData) {
     try {
@@ -48,6 +59,12 @@ export function NavSquads() {
       console.error(error)
       toast.error('Error creating squad. Try again.')
     }
+  }
+
+  function handleLogout() {
+    logout()
+    router.push('/login')
+    toast.success('Logout successful!')
   }
 
   if (isLoading) {
@@ -79,12 +96,17 @@ export function NavSquads() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {selectedSquad ? selectedSquad.name.substring(0, 2).toUpperCase() : 'SQ'}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">Squad Team</span>
-                <span className="truncate text-xs">5 participants</span>
+                <span className="truncate font-medium">
+                  {selectedSquad ? selectedSquad.name : 'Select Squad'}
+                </span>
+                <span className="truncate text-xs">
+                  {selectedSquad ? `${selectedSquad.membersCount} participants` : 'No squad selected'}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -97,7 +119,10 @@ export function NavSquads() {
           >
             <DropdownMenuGroup>
               {squads.map(squad => (
-                <DropdownMenuItem key={squad.id}>
+                <DropdownMenuItem 
+                  key={squad.id}
+                  onClick={() => router.push(`/squad/${squad.id}/dashboard`)}
+                >
                   <Users />
                   {squad.name}
                 </DropdownMenuItem>
@@ -117,7 +142,7 @@ export function NavSquads() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log Out
             </DropdownMenuItem>

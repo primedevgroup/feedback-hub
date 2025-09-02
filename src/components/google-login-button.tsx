@@ -38,7 +38,7 @@ export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonPro
       if (onSuccess) {
         onSuccess()
       } else {
-        router.push('/dashboard')
+        router.push('/squads')
       }
     } catch (error: any) {
       console.error('Erro ao fazer login com Google:', error)

@@ -1,4 +1,5 @@
 'use client'
+import { useParams } from 'next/navigation'
 import { ComponentProps, ReactNode } from 'react'
 import { toast } from 'sonner'
 
@@ -14,14 +15,15 @@ import {
 } from './ui/dialog'
 
 interface WriteFeedbackDialogProps extends ComponentProps<typeof Dialog> {
-  children: ReactNode
+children: ReactNode
 }
 
 export function WriteFeedbackDialog({
   children,
   ...props
 }: WriteFeedbackDialogProps) {
-  
+  const params = useParams()
+  const squadId = params?.squadId as string
 
   async function createFeedback(data: FeedbackData) {
     try {
@@ -29,7 +31,7 @@ export function WriteFeedbackDialog({
         title: data.title,
         content: data.feedback,
         targetId: data.collaborator,
-        squadId: '1'
+        squadId: squadId
       })
 
       console.log(response);
