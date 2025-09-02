@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Calendar,
+  Copy,
   Edit,
   Trash2,
-  UserPlus,
   Users
 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface SquadDetailsPageProps {
   params: {
@@ -27,9 +28,20 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
   // Encontrar a squad atual pelo ID
   const currentSquad = squads?.find(squad => squad.id === squadId)
 
-  const handleInviteMember = () => {
-    // Implementar lógica de convite
-    console.log('Invite member to squad:', squadId)
+  const handleInviteMember = async () => {
+    try {
+      // Construir o link de convite
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+      const inviteLink = `${baseUrl}/invite-link?squadId=${squadId}`
+      
+      // Copiar para a área de transferência
+      await navigator.clipboard.writeText(inviteLink)
+      
+      toast.success('Link de convite copiado para a área de transferência!')
+    } catch (error) {
+      console.error('Erro ao copiar link:', error)
+      toast.error('Erro ao copiar link. Tente novamente.')
+    }
   }
 
   const handleEditSquad = () => {
@@ -102,8 +114,8 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
                 Edit Squad
               </Button>} />
               <Button variant="outline" onClick={handleInviteMember}>
-                <UserPlus className="h-4 w-4 mr-2" />
-                Invite Member
+                <Copy className="h-4 w-4 mr-2" />
+                Copy Invite Link
               </Button>
               <DeleteSquad squadId={squadId} trigger={<Button variant="destructive">
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -133,8 +145,8 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
               The detailed view of members will be implemented soon.
             </p>
             <Button onClick={handleInviteMember}>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Invite New Member
+              <Copy className="h-4 w-4 mr-2" />
+              Copy Invite Link
             </Button>
           </div>
         </CardContent>
