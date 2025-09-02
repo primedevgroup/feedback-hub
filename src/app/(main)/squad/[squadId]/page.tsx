@@ -1,14 +1,12 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+'use client'
+import { DeleteSquad } from '@/components/squads/delete-squad'
+import { EditSquadDialog } from '@/components/squads/edit-squad-dialog'
+import { useSquads } from '@/components/squads/use-squads'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import {
   Calendar,
-  Crown,
   Edit,
-  Mail,
-  Shield,
   Trash2,
   UserPlus,
   Users
@@ -20,123 +18,57 @@ interface SquadDetailsPageProps {
   }
 }
 
-// Mock data - substitua por dados reais da API
-const squadData = {
-  id: '1',
-  name: 'Development Team PrimeDev',
-  description: 'Equipe responsável pelo desenvolvimento das principais funcionalidades do produto',
-  createdAt: '2024-01-15',
-  totalMembers: 8,
-  members: [
-    {
-      id: '1',
-      name: 'João Silva',
-      email: 'joao.silva@company.com',
-      role: 'Tech Lead',
-      avatar: '/avatars/joao.jpg',
-      joinedAt: '2024-01-15',
-      isAdmin: true,
-      isOwner: true
-    },
-    {
-      id: '2',
-      name: 'Maria Santos',
-      email: 'maria.santos@company.com',
-      role: 'Senior Developer',
-      avatar: '/avatars/maria.jpg',
-      joinedAt: '2024-01-20',
-      isAdmin: true,
-      isOwner: false
-    },
-    {
-      id: '3',
-      name: 'Pedro Costa',
-      email: 'pedro.costa@company.com',
-      role: 'Frontend Developer',
-      avatar: '/avatars/pedro.jpg',
-      joinedAt: '2024-02-01',
-      isAdmin: false,
-      isOwner: false
-    },
-    {
-      id: '4',
-      name: 'Ana Oliveira',
-      email: 'ana.oliveira@company.com',
-      role: 'Backend Developer',
-      avatar: '/avatars/ana.jpg',
-      joinedAt: '2024-02-05',
-      isAdmin: false,
-      isOwner: false
-    },
-    {
-      id: '5',
-      name: 'Carlos Lima',
-      email: 'carlos.lima@company.com',
-      role: 'DevOps Engineer',
-      avatar: '/avatars/carlos.jpg',
-      joinedAt: '2024-02-10',
-      isAdmin: false,
-      isOwner: false
-    },
-    {
-      id: '6',
-      name: 'Lucia Ferreira',
-      email: 'lucia.ferreira@company.com',
-      role: 'QA Engineer',
-      avatar: '/avatars/lucia.jpg',
-      joinedAt: '2024-02-15',
-      isAdmin: false,
-      isOwner: false
-    },
-    {
-      id: '7',
-      name: 'Rafael Souza',
-      email: 'rafael.souza@company.com',
-      role: 'Junior Developer',
-      avatar: '/avatars/rafael.jpg',
-      joinedAt: '2024-03-01',
-      isAdmin: false,
-      isOwner: false
-    },
-    {
-      id: '8',
-      name: 'Fernanda Alves',
-      email: 'fernanda.alves@company.com',
-      role: 'UI/UX Designer',
-      avatar: '/avatars/fernanda.jpg',
-      joinedAt: '2024-03-05',
-      isAdmin: false,
-      isOwner: false
-    }
-  ]
-}
+
 
 export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
   const { squadId } = params
+  const { squads, isLoading } = useSquads()
+
+  // Encontrar a squad atual pelo ID
+  const currentSquad = squads?.find(squad => squad.id === squadId)
 
   const handleInviteMember = () => {
     // Implementar lógica de convite
-    console.log('Convidar membro para squad:', squadId)
+    console.log('Invite member to squad:', squadId)
   }
 
   const handleEditSquad = () => {
     // Implementar lógica de edição
-    console.log('Editar squad:', squadId)
+    console.log('Edit squad:', squadId)
   }
 
   const handleDeleteSquad = () => {
     // Implementar lógica de exclusão
-    console.log('Excluir squad:', squadId)
+    console.log('Delete squad:', squadId)
   }
 
-  const handleRemoveMember = (memberId: string) => {
-    // Implementar lógica de remoção de membro
-    console.log('Remover membro:', memberId, 'da squad:', squadId)
+
+
+  // Tratamento de loading
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading squad data...</p>
+        </div>
+      </div>
+    )
   }
 
-  const handlePromoteToAdmin = (memberId: string) => {
-    // Implementar lógica de promoção
-    console.log('Promover membro:', memberId, 'a admin da squad:', squadId)
+  // Tratamento de squad não encontrada
+  if (!currentSquad) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-center">
+          <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Squad not found</h2>
+          <p className="text-muted-foreground">
+            A squad with ID "{squadId}" was not found or you do not have access to it.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -148,35 +80,35 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
             <div className="space-y-2">
               <CardTitle className="text-2xl flex items-center gap-2">
                 <Users className="h-6 w-6" />
-                {squadData.name}
+                {currentSquad.name}
               </CardTitle>
               <CardDescription className="text-base">
-                {squadData.description}
+                Squad created at {new Date(currentSquad.createdAt).toLocaleDateString('pt-BR')}
               </CardDescription>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Criado em {new Date(squadData.createdAt).toLocaleDateString('pt-BR')}
+                  Created at {new Date(currentSquad.createdAt).toLocaleDateString('pt-BR')}
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="h-4 w-4" />
-                  {squadData.totalMembers} membros
+                  {currentSquad.membersCount} members
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleEditSquad}>
+              <EditSquadDialog squadId={squadId} trigger={<Button variant="outline">
                 <Edit className="h-4 w-4 mr-2" />
-                Editar Squad
-              </Button>
+                Edit Squad
+              </Button>} />
               <Button variant="outline" onClick={handleInviteMember}>
                 <UserPlus className="h-4 w-4 mr-2" />
-                Convidar Membro
+                Invite Member
               </Button>
-              <Button variant="destructive" onClick={handleDeleteSquad}>
+              <DeleteSquad squadId={squadId} trigger={<Button variant="destructive">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Excluir Squad
-              </Button>
+                Delete Squad
+              </Button>} />
             </div>
           </div>
         </CardHeader>
@@ -187,83 +119,23 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Membros da Squad
+            Members of the Squad
           </CardTitle>
           <CardDescription>
-            Gerencie os membros da sua squad
+            This squad has {currentSquad.membersCount} members
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {squadData.members.map((member, index) => (
-              <div key={member.id}>
-                <div className="flex items-center justify-between p-4 rounded-lg border">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={member.avatar} alt={member.name} />
-                      <AvatarFallback>
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-medium">{member.name}</h4>
-                        {member.isOwner && (
-                          <Badge variant="default" className="bg-yellow-500">
-                            <Crown className="h-3 w-3 mr-1" />
-                            Owner
-                          </Badge>
-                        )}
-                        {member.isAdmin && !member.isOwner && (
-                          <Badge variant="secondary">
-                            <Shield className="h-3 w-3 mr-1" />
-                            Admin
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Mail className="h-3 w-3" />
-                          {member.email}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          Entrou em {new Date(member.joinedAt).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                      <Badge variant="outline">{member.role}</Badge>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    {!member.isOwner && (
-                      <>
-                        {!member.isAdmin && (
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handlePromoteToAdmin(member.id)}
-                          >
-                            <Shield className="h-4 w-4 mr-1" />
-                            Promover a Admin
-                          </Button>
-                        )}
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleRemoveMember(member.id)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Remover
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-                {index < squadData.members.length - 1 && (
-                  <Separator className="my-2" />
-                )}
-              </div>
-            ))}
+          <div className="text-center py-8">
+            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">List of members in development</h3>
+            <p className="text-muted-foreground mb-4">
+              The detailed view of members will be implemented soon.
+            </p>
+            <Button onClick={handleInviteMember}>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Invite New Member
+            </Button>
           </div>
         </CardContent>
       </Card>

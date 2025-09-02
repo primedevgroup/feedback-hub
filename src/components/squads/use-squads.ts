@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
-import { ApiSquadResponse } from './squads.types'
+import { ApiSquadResponse, Squad } from './squads.types'
 
 import { api } from '@/lib/api'
 
@@ -23,9 +24,27 @@ export function useSquads() {
     },
   })
 
+  function getSquadById(squadId: string) {
+    return squads?.find(squad => squad.id === squadId)
+  }
+
+  async function updateSquad(squadId: string, data: Partial<Squad>) {
+    try {
+      const response = await api.put(`/squad/${squadId}`, data)
+      toast.success('Squad updated successfully!')
+      refetch()
+      return response.data
+    } catch (error) {
+      console.error('Error updating squad:', error)
+      toast.error('Error updating squad. Try again.')
+    }
+  }
+
   return {
     squads,
     isLoading,
     refetchSquads: refetch,
+    getSquadById,
+    updateSquad,
   }
 }

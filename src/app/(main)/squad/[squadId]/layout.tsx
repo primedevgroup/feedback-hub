@@ -5,8 +5,7 @@ import {
   ChartArea,
   EyeOff,
   NotebookPen,
-  Settings,
-  Users,
+  Users
 } from 'lucide-react'
 import { ReactNode } from 'react'
 
@@ -52,11 +51,11 @@ export default function SquadLayout({ children, params }: SquadLayoutProps) {
       url: `/squad/${squadId}`, 
       icon: <Users /> 
     },
-    { 
-      title: 'Squad Settings', 
-      url: `/squad/${squadId}/settings`, 
-      icon: <Settings /> 
-    },
+    // { 
+    //   title: 'Squad Settings', 
+    //   url: `/squad/${squadId}/settings`, 
+    //   icon: <Settings /> 
+    // },
   ]
 
   return (

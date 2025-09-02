@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { api } from '@/lib/api'
 
 // Mock data - substitua por dados reais da API
@@ -100,6 +101,16 @@ export default function SquadsPage() {
   const getRoleLabel = (role: string, isOwner: boolean) => {
     if (isOwner) return 'Owner'
     return role
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full flex-col gap-6">
+        {[1, 2, 3].map(i => (
+          <Skeleton className="h-20 w-full" />
+        ))}
+      </div>
+    )
   }
 
   return (
