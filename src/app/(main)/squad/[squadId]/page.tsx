@@ -2,13 +2,18 @@
 import { DeleteSquad } from '@/components/squads/delete-squad'
 import { EditSquadDialog } from '@/components/squads/edit-squad-dialog'
 import { useSquads } from '@/components/squads/use-squads'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useMembers } from '@/hooks/use-members'
 import {
   Calendar,
   Copy,
   Edit,
+  Mail,
   Trash2,
+  User,
   Users
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -24,6 +29,7 @@ interface SquadDetailsPageProps {
 export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
   const { squadId } = params
   const { squads, isLoading } = useSquads()
+  const { data: members, isLoading: isLoadingMembers } = useMembers({ squadId })
 
   // Encontrar a squad atual pelo ID
   const currentSquad = squads?.find(squad => squad.id === squadId)
@@ -43,18 +49,6 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
       toast.error('Erro ao copiar link. Tente novamente.')
     }
   }
-
-  const handleEditSquad = () => {
-    // Implementar lógica de edição
-    console.log('Edit squad:', squadId)
-  }
-
-  const handleDeleteSquad = () => {
-    // Implementar lógica de exclusão
-    console.log('Delete squad:', squadId)
-  }
-
-
 
   // Tratamento de loading
   if (isLoading) {
@@ -126,7 +120,6 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
         </CardHeader>
       </Card>
 
-      {/* Squad Members */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -138,17 +131,62 @@ export default function SquadDetailsPage({ params }: SquadDetailsPageProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8">
-            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">List of members in development</h3>
-            <p className="text-muted-foreground mb-4">
-              The detailed view of members will be implemented soon.
-            </p>
-            <Button onClick={handleInviteMember}>
-              <Copy className="h-4 w-4 mr-2" />
-              Copy Invite Link
-            </Button>
-          </div>
+          {isLoadingMembers ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                <p className="text-sm text-muted-foreground">Loading members...</p>
+              </div>
+            </div>
+          ) : members && members.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {members.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                      {member.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium truncate">{member.name}</p>
+                      <Badge variant="secondary" className="text-xs">
+                        Member
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Mail className="h-3 w-3" />
+                      <span className="truncate">{member.email}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>Joined {new Date(member.createdAt).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No members found</h3>
+              <p className="text-muted-foreground mb-4">
+                This squad doesn't have any members yet.
+              </p>
+              <Button onClick={handleInviteMember} variant="outline">
+                <Copy className="h-4 w-4 mr-2" />
+                Invite Members
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

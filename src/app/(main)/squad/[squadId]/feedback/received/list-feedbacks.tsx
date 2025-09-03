@@ -28,7 +28,7 @@ export function ListFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-destructive text-center">
-          <p>Erro ao carregar feedbacks recebidos</p>
+          <p>Error loading received feedbacks</p>
         </div>
       </div>
     )
@@ -38,13 +38,12 @@ export function ListFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-muted-foreground text-center">
-          <p>Nenhum feedback recebido ainda.</p>
+          <p>No received feedbacks yet.</p>
         </div>
       </div>
     )
   }
 
-  console.log(feedbacks)
   return (
     <>
       {feedbacks?.map(({ id, content, title, created_at }) => (

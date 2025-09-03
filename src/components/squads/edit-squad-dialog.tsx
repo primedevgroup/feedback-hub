@@ -5,7 +5,6 @@ import React, { ComponentProps, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { api } from '@/lib/api'
 import { Input } from '../form/input'
 import { Button } from '../ui/button'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -24,7 +23,7 @@ export function EditSquadDialog({
   ...props
 }: EditSquadDialogProps) {
   const [open, setOpen] = useState(false)
-  const { squads, refetchSquads } = useSquads()
+  const { squads, refetchSquads, updateSquad } = useSquads()
 
   // Encontrar a squad pelo ID
   const squad = squads?.find(s => s.id === squadId)
@@ -46,19 +45,13 @@ export function EditSquadDialog({
   }, [squad, form])
 
   async function handleSubmit(data: SquadData) {
-    try {
-      const response = await api.put(`/squad/${squadId}`, data)
-      if (response?.status === 200 || response?.status === 201) {
-        toast.success('Squad updated successfully!')
-        refetchSquads()
-        form.reset()
-        setOpen(false)
-      }
-      return response
-    } catch (error) {
-      console.error('Error updating squad:', error)
-      toast.error('Error updating squad. Try again.')
+    const response = await updateSquad(squadId, data)
+    if (response?.status === 200 || response?.status === 201) {
+      form.reset()
+      setOpen(false)
     }
+    toast.success('Squad updated successfully!')
+    refetchSquads()
   }
 
   return (

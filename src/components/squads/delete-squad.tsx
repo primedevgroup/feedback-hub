@@ -37,7 +37,7 @@ export function DeleteSquad({ squadId, trigger }: DeleteSquadProps) {
   // Mutation para deletar a squad
   const deleteSquadMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.delete(`/squad/${squadId}`)
+      const response = await api.delete(`/squad/${squadId}/delete`)
       return response.data
     },
     onSuccess: () => {

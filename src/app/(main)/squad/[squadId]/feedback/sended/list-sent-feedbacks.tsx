@@ -28,7 +28,7 @@ export function ListSentFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-destructive text-center">
-          <p>Erro ao carregar feedbacks enviados</p>
+          <p>Error loading sent feedbacks</p>
         </div>
       </div>
     )
@@ -38,7 +38,7 @@ export function ListSentFeedbacks() {
     return (
       <div className="flex w-full flex-col gap-6">
         <div className="text-muted-foreground text-center">
-          <p>Nenhum feedback enviado ainda.</p>
+          <p>No sent feedbacks yet.</p>
         </div>
       </div>
     )
