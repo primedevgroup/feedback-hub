@@ -10,13 +10,13 @@ import {
 } from '@/components/ui/card'
 
 interface DashboardPageProps {
-  params: {
+  params: Promise<{
     squadId: string
-  }
+  }>
 }
 
-export default function DashboardPage({ params }: DashboardPageProps) {
-  const { squadId } = params
+export default async function DashboardPage({ params }: DashboardPageProps) {
+  const { squadId } = await params
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="flex w-full gap-4">

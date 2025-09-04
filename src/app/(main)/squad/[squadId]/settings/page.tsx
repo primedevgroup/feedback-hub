@@ -16,13 +16,13 @@ import {
 } from 'lucide-react'
 
 interface SquadSettingsPageProps {
-  params: {
+  params: Promise<{
     squadId: string
-  }
+  }>
 }
 
-export default function SquadSettingsPage({ params }: SquadSettingsPageProps) {
-  const { squadId } = params
+export default async function SquadSettingsPage({ params }: SquadSettingsPageProps) {
+  const { squadId } = await params
 
   const handleSaveSettings = () => {
     // Implementar lógica de salvamento
