@@ -3,7 +3,6 @@ import {
   ArrowDown,
   ArrowUp,
   ChartArea,
-  EyeOff,
   NotebookPen,
   Users
 } from 'lucide-react'
@@ -74,9 +73,6 @@ export default function SquadLayout({ children, params }: SquadLayoutProps) {
 
           <div className="flex gap-2 px-4">
             <ModeToggle />
-            <Button variant="ghost">
-              <EyeOff />
-            </Button>
 
             <WriteFeedbackDialog>
               <Button>
