@@ -1,9 +1,9 @@
 'use client'
 import { useParams } from 'next/navigation'
-import { ComponentProps, ReactNode } from 'react'
+
+import { ComponentProps, ReactNode, useState } from 'react'
 import { toast } from 'sonner'
 
-import { api } from '@/lib/api'
 import { FeedbackForm } from './feedback/feedback-form'
 import { FeedbackData } from './feedback/feedback-schemas'
 import {
@@ -14,16 +14,21 @@ import {
   DialogTrigger,
 } from './ui/dialog'
 
+import { useFeedbackListInvalidator } from '@/hooks/use-feedbacks'
+import { api } from '@/lib/api'
+
 interface WriteFeedbackDialogProps extends ComponentProps<typeof Dialog> {
-children: ReactNode
+  children: ReactNode
 }
 
 export function WriteFeedbackDialog({
   children,
   ...props
 }: WriteFeedbackDialogProps) {
+  const [open, setOpen] = useState(false)
   const params = useParams()
   const squadId = params?.squadId as string
+  const invalidateFeedbackLists = useFeedbackListInvalidator()
 
   async function createFeedback(data: FeedbackData) {
     try {
@@ -31,19 +36,22 @@ export function WriteFeedbackDialog({
         title: data.title,
         content: data.feedback,
         targetId: data.collaborator,
-        squadId: squadId
+        squadId: squadId,
       })
 
-      console.log(response);
-      
+      console.log(response)
+
+      await invalidateFeedbackLists()
+
       toast.success('Feedback enviado com sucesso!')
+      setOpen(false)
     } catch (error) {
       toast.error('Erro ao enviar feedback. Tente novamente.')
     }
   }
 
   return (
-    <Dialog {...props}>
+    <Dialog open={open} onOpenChange={setOpen} {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogTitle>Write feedback</DialogTitle>
@@ -52,7 +60,10 @@ export function WriteFeedbackDialog({
           violate our code of ethics! Feedback is 100% anonymous
         </DialogDescription>
 
-        <FeedbackForm onSubmit={createFeedback} />
+        <FeedbackForm
+          onSubmit={createFeedback}
+          onSuccess={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )

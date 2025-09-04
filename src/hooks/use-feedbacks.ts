@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { Feedback } from '@/@types/defaults'
 import { api } from '@/lib/api'
@@ -36,4 +36,15 @@ export function useFeedbackById(id: string) {
     },
     enabled: !!id,
   })
+}
+
+export function useFeedbackListInvalidator() {
+  const queryClient = useQueryClient()
+
+  return async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['feedbacks', 'sent'] }),
+      queryClient.invalidateQueries({ queryKey: ['feedbacks', 'received'] }),
+    ])
+  }
 }
