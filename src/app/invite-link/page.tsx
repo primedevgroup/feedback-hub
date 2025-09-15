@@ -69,10 +69,9 @@ export default function InviteLinkPage() {
     
     try {
       const response = await api.post('/auth/signin', data)
-      const { access_token, user } = response.data
+      const { user } = response.data
 
-
-      login(access_token, user)
+      login(user)
 
       toast.dismiss(loadingToast)
       toast.success('Login successful!')

@@ -16,32 +16,34 @@ export default function LoginPage() {
   const { login } = useAuth()
 
   async function onSubmit(data: any) {
-  const loadingToast = toast.loading('Fazendo login...')
-  
-  try {
-    const response = await api.post('/auth/signin', data)
-    const { access_token, user } = response.data
-
-    login(access_token, user)
-
-    toast.dismiss(loadingToast)
-    toast.success('Login successful!')
-
-    router.push('/squads')
-  } catch (error: any) {
-    console.error('Error logging in:', error)
+    const loadingToast = toast.loading('Fazendo login...')
     
-    toast.dismiss(loadingToast)
-    
-    if (error.response?.status === 401) {
-      toast.error('Email or password incorrect')
-    } else if (error.response?.status === 400) {
-      toast.error('Invalid data. Check the information provided')
-    } else {
-      toast.error('Error logging in. Try again')
+    try {
+      const response = await api.post('/auth/signin', data, { withCredentials: false })
+
+      // if (response.status === 200) {
+      //   const response = await api.get('/user/me', { withCredentials: true })
+      //   login(response.data)
+      // }
+
+      toast.dismiss(loadingToast)
+      toast.success('Login successful!')
+
+      router.push('/squads')
+    } catch (error: any) {
+      console.error('Error logging in:', error)
+      
+      toast.dismiss(loadingToast)
+      
+      if (error.response?.status === 401) {
+        toast.error('Email or password incorrect')
+      } else if (error.response?.status === 400) {
+        toast.error('Invalid data. Check the information provided')
+      } else {
+        toast.error('Error logging in. Try again')
+      }
     }
   }
-}
 
   return (
     <AuthRedirect>

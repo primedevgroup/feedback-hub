@@ -27,10 +27,10 @@ export function GoogleLoginButton({ onSuccess, className }: GoogleLoginButtonPro
         idToken: credentialResponse.credential
       })
 
-      const { access_token, user } = response.data
+      const { user } = response.data
 
       // Usar o contexto de autenticação para fazer login
-      login(access_token, user)
+      login(user)
 
       toast.dismiss(loadingToast)
       toast.success('Login realizado com sucesso!')

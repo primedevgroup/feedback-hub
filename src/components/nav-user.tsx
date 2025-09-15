@@ -25,8 +25,8 @@ export function NavUser() {
   const { user, logout, isLoading } = useAuth()
   const router = useRouter()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     router.push('/login')
   }
 

@@ -14,65 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api } from '@/lib/api'
 
-// Mock data - substitua por dados reais da API
-const squads = [
-  {
-    id: '1',
-    name: 'Development Team PrimeDev',
-    description: 'Equipe responsável pelo desenvolvimento das principais funcionalidades do produto',
-    memberCount: 8,
-    createdAt: '2024-01-15',
-    role: 'Tech Lead',
-    avatar: '/avatars/squad-dev.jpg',
-    lastActivity: '2024-03-15',
-    isOwner: true
-  },
-  {
-    id: '2',
-    name: 'Design Team',
-    description: 'Equipe de design e experiência do usuário',
-    memberCount: 4,
-    createdAt: '2024-01-20',
-    role: 'Member',
-    avatar: '/avatars/squad-design.jpg',
-    lastActivity: '2024-03-14',
-    isOwner: false
-  },
-  {
-    id: '3',
-    name: 'QA Team',
-    description: 'Equipe de qualidade e testes',
-    memberCount: 3,
-    createdAt: '2024-02-01',
-    role: 'Admin',
-    avatar: '/avatars/squad-qa.jpg',
-    lastActivity: '2024-03-13',
-    isOwner: false
-  },
-  {
-    id: '4',
-    name: 'DevOps Team',
-    description: 'Equipe de infraestrutura e deploy',
-    memberCount: 2,
-    createdAt: '2024-02-05',
-    role: 'Member',
-    avatar: '/avatars/squad-devops.jpg',
-    lastActivity: '2024-03-12',
-    isOwner: false
-  },
-  {
-    id: '5',
-    name: 'Marketing Team',
-    description: 'Equipe de marketing e comunicação',
-    memberCount: 5,
-    createdAt: '2024-02-10',
-    role: 'Member',
-    avatar: '/avatars/squad-marketing.jpg',
-    lastActivity: '2024-03-11',
-    isOwner: false
-  }
-]
-
 export default function SquadsPage() {
   const router = useRouter()
   const { squads, isLoading, refetchSquads } = useSquads()

@@ -2,6 +2,7 @@
 
 import { AuthLoading } from '@/components/auth-loading'
 import { useClient } from '@/hooks/use-mobile'
+import { api } from '@/lib/api'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 interface User {
@@ -13,9 +14,8 @@ interface User {
 
 interface AuthContextType {
   user: User | null
-  token: string | null
-  login: (token: string, user: User) => void
-  logout: () => void
+  login: (user: User) => void
+  logout: () => Promise<void>
   isAuthenticated: boolean
   isLoading: boolean
 }
@@ -24,74 +24,36 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const isClient = useClient()
 
   useEffect(() => {
     if (!isClient) return
     
-    // Verificar se há token e dados do usuário no localStorage
-    const storedToken = localStorage.getItem('auth_token')
-    const storedUser = localStorage.getItem('auth_user')
-
-    if (storedToken && storedUser && storedUser !== 'null' && storedUser !== 'undefined') {
-      try {
-        setToken(storedToken)
-        setUser(JSON.parse(storedUser))
-      } catch (error) {
-        console.error('Erro ao carregar dados de autenticação:', error)
-        localStorage.removeItem('auth_token')
-        localStorage.removeItem('auth_user')
-      }
-    }
-    
+    // Não verificar autenticação automaticamente
+    // A API retornará erro 401 quando necessário
     setIsLoading(false)
   }, [isClient])
 
-  // Verificar se o token foi removido do localStorage (por exemplo, por erro 401)
-  useEffect(() => {
-    if (!isClient) return
-
-    const checkToken = () => {
-      const storedToken = localStorage.getItem('auth_token')
-      if (!storedToken && token) {
-        // Token foi removido, fazer logout
-        setToken(null)
-        setUser(null)
-      }
-    }
-
-    // Verificar a cada segundo se o token ainda existe
-    const interval = setInterval(checkToken, 1000)
-    
-    return () => clearInterval(interval)
-  }, [isClient, token])
-
-  const login = (newToken: string, userData: User) => {
-    setToken(newToken)
+  const login = (userData: User) => {
     setUser(userData)
-    if (isClient) {
-      localStorage.setItem('auth_token', newToken)
-      localStorage.setItem('auth_user', JSON.stringify(userData))
-    }
   }
 
-  const logout = () => {
-    setToken(null)
-    setUser(null)
-    if (isClient) {
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth_user')
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout')
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error)
+    } finally {
+      setUser(null)
     }
   }
 
   const value: AuthContextType = {
     user,
-    token,
     login,
     logout,
-    isAuthenticated: !!token,
+    isAuthenticated: !!user,
     isLoading
   }
 
